@@ -6,6 +6,7 @@ const router = Router()
 
 router.post('/signup', async (req, res) => {
     try {
+        console.log("Request body:", req.body)
         let addeduser = await appuser(req.body)
         res.json(addeduser)
 

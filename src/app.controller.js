@@ -6,8 +6,8 @@ import postrouter from "./modules/posts/post.controller.js"
 export const bootstrap = () => {
     const app = express()
     app.use(express.json())
-    app.use('/users', userrouter)
-    app.use('/posts', postrouter)
+    app.use("/api/users", userrouter)
+    app.use("/api/posts", postrouter)
     databaseconnection()
     app.get('/helath_check', (req, res) => {
         res.json({ status: "ok", message: "healthcheck done" })

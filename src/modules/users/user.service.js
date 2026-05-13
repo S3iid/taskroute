@@ -1,10 +1,12 @@
 import { compareHash, generateHash } from "../../common/utils/generateHash.js"
 import usermodel from "../../database/models/user.model.js"
 import { generatetoken } from "../../common/utils/token.js"
-import { env } from "../../../config/env.service.js"
+import { env } from "../../../config/env.service.js"  
 
 export const appuser = async (data) => {
-
+    if (!data) {
+        throw new Error("Request body is required")
+    }
 
     let { userName, email, password, phone } = data
     let hashedPassword = await generateHash(password)
@@ -17,7 +19,9 @@ export const appuser = async (data) => {
 
 }
 export const login = async (data) => {
-
+    if (!data) {
+        throw new Error("Request body is required")
+    }
 
     let { email, password } = data
     let userdata = await usermodel.findOne({ email })
