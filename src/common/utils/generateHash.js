@@ -1,10 +1,10 @@
 
 import bcrypt from "bcrypt"
+import {env } from '../../../config/env.service.js';
 
 
-
-export const generateHash = async(planText)=>{
-let encrypteddata = await bcrypt.hash(planText,8)
+export const generateHash = async(planText,SALT)=>{
+let encrypteddata = await bcrypt.hash(planText,Number(env.SALT))
 return encrypteddata
 
 
@@ -13,6 +13,4 @@ return encrypteddata
 export const compareHash = async(planText,cypherText)=>{
 let isMatched = await bcrypt.compare(planText,cypherText)
 return isMatched    
-
-
 } 

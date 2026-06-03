@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { login, appuser,deleteuser,updateuser } from "./user.service.js"
-import { authMiddleware } from "../../common/middleware/auth.js"
+import { login, appuser, deleteuser, updateuser } from "./auth.service.js"
+import { authMiddleware } from "../../common/middleware/auth.middleware.js"
 
 const router = Router()
 
@@ -32,12 +32,18 @@ router.post('/login', async (req, res) => {
 
 })
 
-router.patch('/updateuserbyid/:id',authMiddleware,async(req,res)=>{
-    let updateduser =await updateuser(req.params.id,req.body)
+
+router.get('/get-user-by-id', (req, res) => {
+
+})
+
+
+router.patch('/updateuserbyid/:id', authMiddleware, async (req, res) => {
+    let updateduser = await updateuser(req.params.id, req.body)
     res.json(updateduser)
 })
-router.delete('/deleteuserbyid/:id',authMiddleware,async(req,res)=>{
-    let deleteduser =await deleteuser(req.params.id)
+router.delete('/deleteuserbyid/:id', authMiddleware, async (req, res) => {
+    let deleteduser = await deleteuser(req.params.id)
     res.json(deleteduser)
 })
 
