@@ -3,7 +3,7 @@ import { env } from '../config/env.service.js'
 import { databaseconnection } from "./database/connection.js"
 import userrouter from "./modules/auth/auth.controller.js"
 import bookrouter from "./modules/booking/booking.controller.js"
-import { globalhandlingerror } from "./common/response/response.error.js"
+import { errorMiddleware } from "./common/middleware/error.middleware.js"
 import { sucessResponse } from "./common/response/sucess.response.js"
 
 export const bootstrap = () => {
@@ -36,7 +36,7 @@ export const bootstrap = () => {
         res.status(404).json({ message: "url not found" })
     })
 
-    app.use(globalhandlingerror)
+    app.use(errorMiddleware)
 
     app.listen(env.port, () => {
         console.log("server is running")

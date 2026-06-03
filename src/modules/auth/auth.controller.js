@@ -4,32 +4,24 @@ import { authMiddleware } from "../../common/middleware/auth.middleware.js"
 
 const router = Router()
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', async (req, res, next) => {
     try {
         console.log("Request body:", req.body)
         let addeduser = await appuser(req.body)
         res.json(addeduser)
-
-
     } catch (error) {
-        console.error(" error:", error)
-        res.status(500).json({ message: "error catched", error: error.message })
+        next(error)
     }
-
-
 })
 
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
     try {
         let addeduser = await login(req.body)
         res.json(addeduser)
-
     } catch (error) {
-        console.error(" error:", error)
-        res.status(500).json({ message: "error catched", error: error.message })
+        next(error)
     }
-
 })
 
 
@@ -38,13 +30,21 @@ router.get('/get-user-by-id', (req, res) => {
 })
 
 
-router.patch('/updateuserbyid/:id', authMiddleware, async (req, res) => {
-    let updateduser = await updateuser(req.params.id, req.body)
-    res.json(updateduser)
+router.patch('/updateuserbyid/:id', authMiddleware, async (req, res, next) => {
+    try {
+        let updateduser = await updateuser(req.params.id, req.body)
+        res.json(updateduser)
+    } catch (error) {
+        next(error)
+    }
 })
-router.delete('/deleteuserbyid/:id', authMiddleware, async (req, res) => {
-    let deleteduser = await deleteuser(req.params.id)
-    res.json(deleteduser)
+router.delete('/deleteuserbyid/:id', authMiddleware, async (req, res, next) => {
+    try {
+        let deleteduser = await deleteuser(req.params.id)
+        res.json(deleteduser)
+    } catch (error) {
+        next(error)
+    }
 })
 
 export default router;

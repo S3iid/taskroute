@@ -6,36 +6,39 @@ import { env } from "../../../config/env.service.js"
 
 export const appuser = async (data) => {
     if (!data) {
-        throw new Error("Request body is required")
+        throw { statusCode: 400, message: "Request body is required" }
     }
 
-    let { fullName, email, password, phone } = data
+    let { fullName, email, password, phone, role = 'user' } = data
      if (!password || password.length < 8) {
-        return { message: "Password must be at least 8 characters" }
+        throw { statusCode: 400, message: "Password must be at least 8 characters" }
+    }
+    if (!['user', 'admin'].includes(role)) {
+        throw { statusCode: 400, message: "Role must be 'user' or 'admin'" }
     }
     let hashedPassword = await generateHash(password)
-    let addeduser = await usermodel.create({ fullName, email, password: hashedPassword, phone })
+    let addeduser = await usermodel.create({ fullName, email, password: hashedPassword, phone, role })
     if (addeduser) {
         return { success: true, message: "user created", addeduser }
     } else {
-        return { success: false, message: "something incorrect" }
+        throw { statusCode: 500, message: "Failed to create user" }
     }
 }
 export const login = async (data) => {
     if (!data) {
-        throw new Error("Request body is required")   
+        throw { statusCode: 400, message: "Request body is required" }   
     }
     let { email, password } = data
     let userdata = await usermodel.findOne({ email })
     if (!userdata) {
-        return { success: false, message: "user not found" }
+        throw { statusCode: 404, message: "user not found" }
     }
     const isMatchedpassword = await compareHash(password, userdata.password)
     if (isMatchedpassword) {
-        let token = await generatetoken({ id: userdata._id })
+        let token = await generatetoken({ id: userdata._id, role: userdata.role })
         return { success: true, message: "Login Success", token }
     } else {
-        return { success: false, message: "password incorrect" }
+        throw { statusCode: 401, message: "password incorrect" }
     }
 
 
@@ -46,7 +49,7 @@ export const updateuser = async (id, data) => {
   if (updateduser) {
     return { message: "user updated", updateduser }
   } else {
-    return { message: "user not found" }
+    throw { statusCode: 404, message: "user not found" }
   }
 }
 
